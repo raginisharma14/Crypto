@@ -13,6 +13,7 @@ c_value: decrypted message
 n_value: modulus
 
 */
+clock_t start, end;
 void Initialize()
 {
 mpz_init(e_value);
@@ -110,24 +111,20 @@ void GeneratePrimes()
 
 int main (int argc, char* argv[]) 
 {
-    clock_t start, end;
     start = clock();
+    ConvertInputStringToInteger();
     Initialize();
-    unsigned long int i =0;
-    char* input ;
-    printf("Enter Integer value that should get encrypted::");
-    scanf("%120s", input);
-    std::string input_string = std::string(input); 
-    i = std::atoi(input_string.c_str());
-
-    mpz_set_ui(m_value, i);
     GeneratePrimes();
     Encryption(m_value);
-    Decryption(c_value, d_value); 
-    mpz_clear(rand_num);
-
-    gmp_randclear(r_state);
+    Decryption(c_value, d_value);
+    Clear();
+    Print(); 
     end = clock();
+    return 0;
+}
+void Print()
+{
+
     double msecs;
     msecs = ((double) (end-start)) * 1000/CLOCKS_PER_SEC;
     printf("%f Execution Time Of The Entire Program::-->",msecs);
@@ -136,10 +133,19 @@ int main (int argc, char* argv[])
     gmp_printf("value of e is --%Zd\n", e_value);
     gmp_printf("value of n is --%Zd\n", n_value);
     gmp_printf("value of c is --%Zd\n", c_value);
-    clear();    
-    return 0;
+
 }
-void clear()
+void ConvertInputStringToInteger()
+{
+    unsigned long int i =0;
+    char* input ;
+    printf("Enter Integer value that should get encrypted::");
+    scanf("%1s", input);
+    std::string input_string = std::string(input); 
+    i = std::atoi(input_string.c_str());
+    mpz_set_ui(m_value, i);
+}
+void Clear()
 {
 
     mpz_clear(rand_num);
