@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstdlib>
-using std::string;
 /*
 m_value: message sent by the user
 e_value: public exponent
@@ -115,9 +114,9 @@ int main (int argc, char* argv[])
     start = clock();
     Initialize();
     unsigned long int i =0;
-    char* input;
+    char* input ;
     printf("Enter Integer value that should get encrypted::");
-    scanf("%s", input);
+    scanf("%120s", input);
     std::string input_string = std::string(input); 
     i = std::atoi(input_string.c_str());
 
@@ -137,6 +136,28 @@ int main (int argc, char* argv[])
     gmp_printf("value of e is --%Zd\n", e_value);
     gmp_printf("value of n is --%Zd\n", n_value);
     gmp_printf("value of c is --%Zd\n", c_value);
-    
+    clear();    
     return 0;
+}
+void clear()
+{
+
+    mpz_clear(rand_num);
+    mpz_clear(m_value);
+    mpz_clear(p_value);
+    mpz_clear(q_value);
+    mpz_clear(n_value);
+    mpz_clear(p_minusvalue);
+    mpz_clear(q_minusvalue);
+    mpz_clear(e_value);
+    mpz_clear(c_value);
+    mpz_clear(d_value);
+    mpz_clear(phi_value);
+    mpz_clear(constant_value);
+    mpz_clear(gcd_value_of_e_and_phi);
+    mpf_clear(float_value_of_n);
+    mpf_clear(float_value_of_d);
+    mpf_clear(check_d_value);
+    mpz_clear(zero_constant_value);
+    gmp_randclear(r_state);
 }
