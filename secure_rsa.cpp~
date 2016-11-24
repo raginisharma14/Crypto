@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <gmp.h>
+#include <string>
+#include <stdlib.h>
+#include "secure_rsa.h"
+/*
+m_value: message sent by the user
+e_value: public exponent
+d_value: private exponent
+c_value: decrypted message
+n_value: modulus
+
+*/
+void Encryption(mpz_t m_value)
+{
+    mpz_powm(c_value, m_value, e_value, n_value); 
+    gmp_printf("%Zd encrypted value of the message is::", c_value);
+}
+void Decryption(mpz_t c_value, mpz_t d_value)
+{
+    mpz_powm(m_value, c_value, d_value, n_value);
+    gmp_printf("%Zd decrypted value of the encrypted message is::", m_value);
+
+}
+bool CheckForDValue()
+{
+    mpf_set_z(float_value_of_n, n_value);                       
+    mpf_sqrt(check_d_value, float_value_of_n);
+    mpf_set_z(float_value_of_d, d_value);
+    if(mpf_cmp(float_value_of_d, check_d_value) > 0)
+    {
+        printf("RSA Scheme is secure and the d value is 				> N^05");
+        return true;
+    }
+    return false;
+}
+int main (int argc, char* argv[]) 
+{
+    if(argc < 1)
+    {
+        std::cerr << "Usage: You are expected to enter one message to thos program to run and output desired result" <<  std::endl;
+        return 1;
+    }
+    mpz_set_str(m_value, argv[0],2); 
+    gmp_randstate_t r_state;
+    seed = 1234;
+    gmp_randinit_mt(r_state);
+    gmp_randseed_ui(r_state, seed);
+    GeneratePrimes();
+
+}
+void GeneratePrimes() 
+{
+    int count_of_primes =0;
+    while(true)
+    {
+       mpz_urandomb(rand_num,r_state,2048);
+	if((mpz_even_p(rand_num) == 0))
+	{
+	    if(mpz_probab_prime_p(rand_num, 100) == 1)
+	    {	
+                count_of_primes++;
+		if(count_of_primes == 1)
+		{
+		    mpz_set(p_value,rand_num);
+		}
+		if(count_of_primes == 2)
+		{
+		    mpz_set(q_value,rand_num);
+		    mpz_mul(n_value, p_value, q_value);
+    		    mpz_sub(p_minusvalue, p_value, constant_value);
+    		    mpz_sub(q_minusvalue, q_value, constant_value);
+    		    mpz_mul(phi_value, p_minusvalue, q_minusvalue);
+                    mpz_gcd(gcd_value_of_e_and_phi, e_value, phi_value);
+    		    mpz_invert(d_value, e_value, phi_value);
+                    bool d_value_greater_than_n_power_half = CheckForDValue();
+		    if(mpz_cmp(gcd_value_of_e_and_phi, constant_value) == 0)
+		    {
+			if(!(mpz_cmp(d_value,zero_constant_value) == 0))
+			{
+			    if(d_value_greater_than_n_power_half)
+                              break;
+			}
+                    }
+		    else
+		    {
+		        count_of_primes =0;		
+	            }
+			   	
+		} 
+			
+	}
+	
+    }
+    gmp_randclear(r_state);
+    mpz_clear(rand_num);
+
+}
+

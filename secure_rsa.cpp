@@ -13,12 +13,10 @@ c_value: decrypted message
 n_value: modulus
 
 */
-clock_t start, end;
 void Initialize()
 {
 mpz_init(e_value);
 mpz_init(constant_value);
-mpz_init(m_value);
 mpz_init(p_value);
 mpz_init(q_value);
 mpz_init(n_value);
@@ -39,13 +37,14 @@ gmp_randinit_mt(r_state);
 }
 void Encryption(mpz_t m_value)
 {
-    mpz_powm(c_value, m_value, e_value, n_value); 
-    gmp_printf("%Zd encrypted value of the message is::", c_value);
+    mpz_powm(c_value, m_value, e_value, n_value);
+     
+    gmp_printf("encrypted value of the message is::%Zd", c_value);
 }
 void Decryption(mpz_t c_value, mpz_t d_value)
 {
     mpz_powm(m_value, c_value, d_value, n_value);
-    gmp_printf("%Zd decrypted value of the encrypted message is::", m_value);
+    gmp_printf("decrypted value of the encrypted message is::%Zd", m_value);
 
 }
 bool CheckForDValue()
@@ -68,10 +67,10 @@ void GeneratePrimes()
     while(true)
     {
 
-        mpz_urandomb(rand_num,r_state,2048);
+        mpz_urandomb(rand_num,r_state,SIZE_OF_MODULO);
  	if((mpz_even_p(rand_num) == 0))
 	{
-	    if(mpz_probab_prime_p(rand_num, 100) == 1)
+	    if(mpz_probab_prime_p(rand_num, ACCURACY_PARAMETER) == 1)
 	    {	
                 count_of_primes++;
 		if(count_of_primes == 1)
@@ -112,22 +111,23 @@ void GeneratePrimes()
 int main (int argc, char* argv[]) 
 {
     start = clock();
-    ConvertInputStringToInteger();
+    mpz_init(m_value);
+    printf("Enter Integer value that should get encrypted::");
+    std::cin >> m_value;
     Initialize();
     GeneratePrimes();
     Encryption(m_value);
     Decryption(c_value, d_value);
+    Print();
     Clear();
-    Print(); 
     end = clock();
+    double msecs;
+    msecs = ((double) (end-start)) * 1000/CLOCKS_PER_SEC;
+    printf(" Execution Time Of The Entire Program::%f",msecs);
     return 0;
 }
 void Print()
 {
-
-    double msecs;
-    msecs = ((double) (end-start)) * 1000/CLOCKS_PER_SEC;
-    printf("%f Execution Time Of The Entire Program::-->",msecs);
     printf("Below are the private key, public key, Modulus and encrypted values of the message given by the user::\n");
     gmp_printf("value of d is --%Zd\n", d_value);
     gmp_printf("value of e is --%Zd\n", e_value);
@@ -135,19 +135,8 @@ void Print()
     gmp_printf("value of c is --%Zd\n", c_value);
 
 }
-void ConvertInputStringToInteger()
-{
-    unsigned long int i =0;
-    char* input ;
-    printf("Enter Integer value that should get encrypted::");
-    scanf("%1s", input);
-    std::string input_string = std::string(input); 
-    i = std::atoi(input_string.c_str());
-    mpz_set_ui(m_value, i);
-}
 void Clear()
 {
-
     mpz_clear(rand_num);
     mpz_clear(m_value);
     mpz_clear(p_value);

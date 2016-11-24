@@ -1,5 +1,9 @@
 #ifndef SECURE_RSA
 #define SECURE_RSA
+
+clock_t start, end;
+const int SIZE_OF_MODULO = 2048;
+const int ACCURACY_PARAMETER = 100;
 /*
 Declaration of all the mpz_t variables
 */
@@ -32,5 +36,5 @@ void Initialize();
 void GeneratePrimes();
 void Clear();
 void Print();
-void ConvertInputStringToInteger();
+
 #endif
