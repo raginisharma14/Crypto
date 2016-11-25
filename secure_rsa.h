@@ -36,5 +36,4 @@ void Initialize();
 void GeneratePrimes();
 void Clear();
 void Print();
-
 #endif
