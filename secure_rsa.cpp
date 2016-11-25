@@ -1,10 +1,12 @@
 #include <string>
-#include <gmp.h>
+#include <gmpxx.h>
 #include "secure_rsa.h"
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstdlib>
+#include <map>
+#include <time.h>
 /*
 m_value: message sent by the user
 e_value: public exponent
@@ -61,8 +63,8 @@ bool CheckForDValue()
 void GeneratePrimes() 
 {
     int count_of_primes =0;
-
-    seed = 1234;
+    seed = (unsigned long int)time(0);
+    printf("value of seed::%lu", seed);
     gmp_randseed_ui(r_state, seed);
     while(true)
     {
@@ -80,7 +82,7 @@ void GeneratePrimes()
 		if(count_of_primes == 2)
 		{
 		    mpz_set(q_value,rand_num);
-		    mpz_mul(n_value, p_value, q_value);
+         	    mpz_mul(n_value, p_value, q_value);           
     		    mpz_sub(p_minusvalue, p_value, constant_value);
     		    mpz_sub(q_minusvalue, q_value, constant_value);
     		    mpz_mul(phi_value, p_minusvalue, q_minusvalue);
@@ -92,18 +94,21 @@ void GeneratePrimes()
 			if(!(mpz_cmp(d_value,zero_constant_value) == 0))
 			{
 			    if(d_value_greater_than_n_power_half)
-                              break;
+			    {
+				break;
+			    }
 			}
                     }
 		    else
 		    {
-		        count_of_primes =0;		
+		        count_of_primes =0;
+				
 	            }
 			   	
 		} 
 	    }		
 	}
-	
+
     }
 
 }
