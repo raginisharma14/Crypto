@@ -34,6 +34,7 @@ void decryption(mpz_t c);
 bool CheckForDValue();
 void Initialize();
 void GeneratePrimes();
+void GenerateEValue();
 void Clear();
 void Print();
 #endif

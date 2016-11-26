@@ -44,7 +44,7 @@ void Encryption(mpz_t m_value)
 }
 void Decryption(mpz_t c_value, mpz_t d_value)
 {
-    // Timing Attack is implemented by embedding random value to the cipher text before decryting the cipher text.blind value is the embedded value.    
+    //3.CheckPoint::Timing Attack is implemented by embedding random value to the cipher text before decryting the cipher text.blind value is the embedded value.    
     start = clock();
     seed = (unsigned long int)time(0);
     printf("value of seed::%lu", seed);

@@ -32,8 +32,6 @@ mpz_init(q_minusvalue);
 mpf_init(float_value_of_d);
 mpz_init(gcd_value_of_e_and_phi);
 mpf_init(check_d_value);
-//CheckPoint5:: E value is set to 2^16 + 1 as recommended in the Dan Boneh's Documentation
-mpz_set_ui(e_value, 65537);
 mpz_set_ui(constant_value, 1);
 mpz_init(zero_constant_value);
 gmp_randinit_mt(r_state);
@@ -48,6 +46,33 @@ void Decryption(mpz_t c_value, mpz_t d_value)
 {
     mpz_powm(m_value, c_value, d_value, n_value);
     gmp_printf("decrypted value of the encrypted message is::%Zd", m_value);
+
+}
+void GenerateEValue()
+{
+    seed = (unsigned long int)time(0);
+    printf("value of seed::%lu", seed);
+    gmp_randseed_ui(r_state, seed);
+    int i;
+    //Reason behind looping through only 10 is, Kernel was killing the process as the program was trying to access system memory.
+    while(i<10)
+    {
+        mpz_urandomb(rand_num,r_state,SIZE_OF_MODULO);
+        
+        mpz_t power_nine_value;
+        mpz_init(power_nine_value);
+        mpz_pow_ui(power_nine_value, n_value, 9);
+        mpz_root(e_value, power_nine_value, 10);
+        if(mpz_cmp(rand_num, e_value) > 0)
+	{
+            if(mpz_cmp(rand_num, n_value) < 0)
+	    {
+                break;
+            }
+	}
+	i++;
+    }
+
 
 }
 bool CheckForDValue()
@@ -87,7 +112,8 @@ void GeneratePrimes()
     		    mpz_sub(p_minusvalue, p_value, constant_value);
     		    mpz_sub(q_minusvalue, q_value, constant_value);
     		    mpz_mul(phi_value, p_minusvalue, q_minusvalue);
-		    //1.CheckPoint::GCD of e and phi should be 1
+                    //CheckPoint4::As evalue approaches N, No of d bits required to break the scheme increases and hence having e value greater than N^0.5, would not allow the adversary to attack the scheme.This explainshow we have implemented Partial Key Exposure Attack.GenerateEValue() function generates e value which = N^0.9
+                    GenerateEValue();
                     mpz_gcd(gcd_value_of_e_and_phi, e_value, phi_value);
     		    mpz_invert(d_value, e_value, phi_value);
                     bool d_value_greater_than_n_power_half = CheckForDValue();
@@ -95,7 +121,6 @@ void GeneratePrimes()
 		    {
 			if(!(mpz_cmp(d_value,zero_constant_value) == 0))
 			{
-                            //2.Checkpoint::d value should be greater than N power half to prevent Low Private Exponent Attack as per Boneh,Durfee 
 			    if(d_value_greater_than_n_power_half)
 			    {
 				break;
