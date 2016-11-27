@@ -29,8 +29,8 @@ unsigned long int seed;
 /*
 Below is the declaration of two functions encryption and decryption. 
 */
-void encryption(mpz_t m);
-void decryption(mpz_t c);
+void Encryption();
+void Decryption();
 bool CheckForDValue();
 void Initialize();
 void GeneratePrimes();

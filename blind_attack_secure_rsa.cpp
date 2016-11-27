@@ -37,12 +37,12 @@ mpz_set_ui(constant_value, 1);
 mpz_init(zero_constant_value);
 gmp_randinit_mt(r_state);
 }
-void Encryption(mpz_t m_value)
+void Encryption()
 {
     mpz_powm(c_value, m_value, e_value, n_value);
     gmp_printf("encrypted value of the message is::%Zd", c_value);
 }
-void Decryption(mpz_t c_value, mpz_t d_value)
+void Decryption()
 {
     //3.CheckPoint::Timing Attack is implemented by embedding random value to the cipher text before decryting the cipher text.blind value is the embedded value.    
     start = clock();
@@ -135,8 +135,8 @@ int main (int argc, char* argv[])
     std::cin >> m_value;
     Initialize();
     GeneratePrimes();
-    Encryption(m_value);
-    Decryption(c_value, d_value);
+    Encryption();
+    Decryption();
     Print();
     Clear();
     end = clock();
